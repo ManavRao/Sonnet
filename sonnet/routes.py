@@ -158,7 +158,7 @@ def update_post(post_id):
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
-    return render_template('edit_post.html', title='Update Post', legend='Update Post', form=form)
+    return render_template('update_post.html', title='Update Post', legend='Update Post', form=form)
 
 @app.route('/post/<int:post_id>/delete', methods=['POST'])
 @login_required
