@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for post in posts.items %}
+        <article>
+            <div class="card mb-2">
+                <div class="card-header">
+                    <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + post.author.image_file) }}">
+                    <a class="card-link" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}</a> on <span class="text-muted">{{ post.date_posted.strftime('%d %B, %Y') }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><a class="card-link" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h5>
+                    <audio style="width:100%;" controls preload="none">
+                        <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
+                    </audio>
+                    <p class="card-text">{{ contents[loop.index0]|safe }}</p>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+    {% for page_num in posts.iter_pages(left_current=1, left_edge=1, right_current=2, right_edge=1) %}
+        {% if page_num %}
+            {% if posts.page == page_num %}
+                <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+{% endblock %}
