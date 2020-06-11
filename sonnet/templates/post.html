@@ -12,15 +12,24 @@
                     </div>
                 {% endif %}
             </div>
+
             <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
-                    <audio style="width:100%;" controls preload="none">
-                        <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
-                    </audio>
+               <h5 class="card-title">{{ post.title }}</h5>
+
+            <div id="audio-spectrum"></div>
+            <!-- Create action buttons -->
+            <input type="button" id="btn-play" value="Play" disabled="disabled"/>
+            <input type="button" id="btn-pause" value="Pause" disabled="disabled"/>
+            <input type="button" id="btn-stop" value="Stop" disabled="disabled" />
+              <!-- <audio style="width:100%;" controls preload="none">
+                   </audio> -->
+                <source id = "audio" src="{{ url_for('static', filename='tracks/' + post.track) }}">
+                <br><br>
                 <p class="card-text">{{ content|safe }}</p>
             </div>
         </div>
     </article>
+
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -39,4 +48,10 @@
             </div>
         </div>
     </div>
+
+    <!-- Load the wavesurferscript , in this case from a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='player.js') }}"></script>
+
 {% endblock %}
