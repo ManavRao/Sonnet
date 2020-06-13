@@ -202,3 +202,15 @@ def like_action(post_id, action):
         current_user.unlike(post)
         db.session.commit()
     return redirect(request.referrer)
+
+@app.route('/home/<type>/<int:user_id>/<action>')
+@login_required
+def follow_action(type,user_id, action):
+    user = User.query.filter_by(id=user_id).first_or_404()
+    if action == 'follow':
+        current_user.follow(user)
+        db.session.commit()
+    if action == 'unfollow':
+        current_user.unfollow(user)
+        db.session.commit()
+    return redirect(request.referrer)
