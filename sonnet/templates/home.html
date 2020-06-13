@@ -13,6 +13,20 @@
                         <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
                     </audio>
                     <p class="card-text">{{ contents[loop.index0]|safe }}</p>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user!=post.author %}  
+                            {% if current_user.is_liking(post) %}
+                                <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
+                    {% endif %}
+                    <br>
+                    {{ post.likers.count() }} likes 
+                    
                 </div>
             </div>
         </article>

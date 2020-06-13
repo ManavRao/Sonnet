@@ -6,6 +6,10 @@ from sonnet import db, login_manager
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+post_likes = db.Table('post_likes',
+    db.Column('user_id',db.Integer,db.ForeignKey('user.id')),
+    db.Column('post_id',db.Integer,db.ForeignKey('post.id')))
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -13,9 +17,22 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    liked = db.relationship('Post', secondary=post_likes,
+                                    backref = db.backref('likers', lazy='dynamic'), lazy='dynamic')
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+    
+    def like(self, post):
+        if not self.is_liking(post):
+            self.liked.append(post)
+
+    def unlike(self, post):
+        if self.is_liking(post):
+            self.liked.remove(post)
+
+    def is_liking(self, post):
+        return db.session.execute("SELECT COUNT(*) FROM post_likes WHERE user_id = :user_id AND post_id = :post_id", {'user_id': self.id, 'post_id': post.id}).fetchone()[0] > 0
 
 post_tags = db.Table('post_tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),

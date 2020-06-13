@@ -14,19 +14,24 @@
             </div>
 
             <div class="card-body">
-               <h5 class="card-title">{{ post.title }}</h5>
-
-            <div id="audio-spectrum"></div>
-            <!-- Create action buttons -->
-            <input type="button" id="btn-play" value="Play" disabled="disabled"/>
-            <input type="button" id="btn-pause" value="Pause" disabled="disabled"/>
-            <input type="button" id="btn-stop" value="Stop" disabled="disabled" />
-              <!-- <audio style="width:100%;" controls preload="none">
-                   </audio> -->
-                <source id = "audio" src="{{ url_for('static', filename='tracks/' + post.track) }}">
-                <br><br>
-                <p class="card-text">{{ content|safe }}</p>
-            </div>
+                <h5 class="card-title">{{ post.title }}</h5>
+                <audio style="width:100%;" controls preload="none">
+                    <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
+                </audio>
+                {% if current_user.is_authenticated %}
+                    {% if current_user!=post.author %}  
+                        {% if current_user.is_liking(post) %}
+                            <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
+                {% endif %}
+                <br>
+                {{ post.likers.count() }} likes 
+                    
         </div>
     </article>
 
