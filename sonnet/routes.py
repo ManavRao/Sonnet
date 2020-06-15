@@ -109,10 +109,14 @@ def process_tags(text):
 
 def process_content(text):
     tags = re.findall('#[\w]*', text)
+    print(text)
+    idx = 0
     if tags:
         for tag in tags:
             t = url_for('topic', tag=tag.lower()[1:])
-            text = text.replace(tag, f'<a href="{t}">{tag}</a>')
+            text = text[:idx+1] + text[idx+1:].replace(tag, f'<a href="{t}">{tag}</a>', 1)
+            idx = text.index(tag)
+    print(text)
     return text
 
 @app.route('/post/new', methods=['GET', 'POST'])
@@ -150,6 +154,11 @@ def update_post(post_id):
         if form.track.data:
             track_file = save_track(form.track.data)
             post.track = track_file
+        tags = process_tags(form.content.data)
+        for tag in tags:
+            tg_ex = Tag.query.filter_by(name=tag.name).first()
+            if tg_ex is None:
+                db.session.add(tag)
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
