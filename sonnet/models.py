@@ -56,6 +56,13 @@ class User(db.Model, UserMixin):
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0
     def is_followingbyid(self,user_id):
         return self.followed.filter(followers.c.followed_id == user_id).count() > 0
+    
+    def followed_posts(self):
+        followed = Post.query.join(
+            followers, (followers.c.followed_id == Post.user_id)).filter(
+                followers.c.follower_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.date_posted.desc())
 
 post_tags = db.Table('post_tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),

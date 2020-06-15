@@ -12,7 +12,8 @@ import secrets
 @app.route('/home')
 def home():
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = current_user.followed_posts().paginate(page=page, per_page=5)
+    # posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
     for post in posts.items:
         contents.append(process_content(post.content))
