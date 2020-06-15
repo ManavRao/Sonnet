@@ -109,14 +109,12 @@ def process_tags(text):
 
 def process_content(text):
     tags = re.findall('#[\w]*', text)
-    print(text)
     idx = 0
     if tags:
         for tag in tags:
             t = url_for('topic', tag=tag.lower()[1:])
             text = text[:idx+1] + text[idx+1:].replace(tag, f'<a href="{t}">{tag}</a>', 1)
             idx = text.index(tag)
-    print(text)
     return text
 
 @app.route('/post/new', methods=['GET', 'POST'])
