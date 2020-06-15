@@ -55,3 +55,7 @@ class PostForm(FlaskForm):
 class SearchForm(FlaskForm):
     search = StringField('Search', validators=[DataRequired()])
     submit = SubmitField('Find')
+
+class AddCommentForm(FlaskForm):
+    body = StringField("Body", validators=[DataRequired()])
+    submit = SubmitField("Post")

@@ -1,14 +1,14 @@
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, login_required, logout_user
 from sonnet import app, bcrypt, db
-from sonnet.forms import PostForm, LoginForm, RegistrationForm, UpdateAccountForm,SearchForm
-from sonnet.models import Post, Tag, User
+from sonnet.forms import PostForm, LoginForm, RegistrationForm, UpdateAccountForm,SearchForm,AddCommentForm
+from sonnet.models import Post, Tag, User, Comment
 import os
 from PIL import Image
 import re
 import secrets
 
-@app.route('/')
+
 @app.route('/home')
 def home():
     page = request.args.get('page', 1, type=int)
@@ -56,7 +56,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('search'))
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -134,11 +134,21 @@ def new_post():
         return redirect(url_for('home'))
     return render_template('edit_post.html', title='New Post', legend='New Post', form=form)
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     post = Post.query.get_or_404(post_id)
     content = process_content(post.content)
-    return render_template('post.html', title=post.title, content=content, post=post)
+    form = AddCommentForm()
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.timestamp.desc()).all()   #.order_by(Post.date_posted.desc())
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data, post_id=post.id, author=current_user)
+        db.session.add(comment)
+        db.session.commit()
+        flash("Your comment has been added to the post", "success")
+        return redirect(url_for("post", post_id=post.id))
+    return render_template('post.html', title=post.title, content=content, post=post, form= form, comments= comments)
 
 @app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
@@ -216,6 +226,7 @@ def follow_action(type,user_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
+@app.route('/')
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     form = SearchForm()

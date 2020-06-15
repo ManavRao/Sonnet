@@ -33,6 +33,7 @@
                                 <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
                             {% endif %}
                         {% endif %}
+                        <a class="btn btn-primary" href="{{ url_for('post', post_id=post.id) }}">Comment</a>
                     {% else %}
                         <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
                     {% endif %}

@@ -44,6 +44,58 @@
                 {{ post.likers.count() }} likes 
                     
         </div>
+        <div>
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group flex-row">
+                    <div class="form-group">
+                        {{ form.body.label(class="form-control-label") }}
+                        {% if form.body.errors %}
+                            {{ form.body(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.body.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.body(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.submit(class="btn btn-outline-info") }}    
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div >
+            <legend class="border-bottom pb-2 mb-4">Comments</legend>
+        </div>
+        <div>
+            {% for comment in comments%}
+            <!-- <div class="card mb-2">
+                <div class="card-header">
+                    <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
+                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a> 
+                    <h3>{{comment.body}}</h3>
+                </div>
+            </div> -->
+            <div  class="ml-auto mr-auto card mb-2 flex-row">
+                <div class="card-header">
+                    <div >
+                        <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
+                    </div>
+                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a> 
+                </div>
+                <div>
+                    <h3>{{comment.body}}</h3>
+                </div>
+            </div>
+
+               
+
+            {% endfor %}
+        </div>
+
     </article>
 
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

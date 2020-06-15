@@ -22,6 +22,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    comments = db.relationship('Comment', backref='author', lazy=True)
     liked = db.relationship('Post', secondary=post_likes,
                                     backref = db.backref('likers', lazy='dynamic'), lazy='dynamic')
 
@@ -76,6 +77,7 @@ class Post(db.Model):
     track = db.Column(db.String(20), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     tags = db.relationship('Tag', secondary=post_tags, backref=db.backref('posts', lazy='dynamic'), lazy='dynamic')
+    comments = db.relationship('Comment', backref='article', lazy=True)
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.track}',  '{self.date_posted}')"
@@ -86,3 +88,13 @@ class Tag(db.Model):
 
     def __repr__(self):
         return f"Tag('{self.name}')"
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(100), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Comment('{self.body}', '{self.timestamp}')"

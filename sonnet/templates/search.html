@@ -40,7 +40,9 @@
                         {% if current_user.is_authenticated %}
                             {% if res != current_user %}    
                                 {% if current_user.is_following(res)%}    
-                                    <font size =2 style="position:relative; left:20px; top:-2px; color:green">Following</font>    
+                                    <font size =2 style="position:relative; left:20px; top:-2px; color:green">Following</font>   
+                                {% else %} 
+                                <a class="btn btn-primary" href="{{ url_for('user_posts', username=res.username) }}">Follow</a>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
@@ -69,16 +71,30 @@
                             {% if post.author  != current_user %}    
                                 {% if current_user.is_followingbyid(post.user_id)%}    
                                     <font size =2 style="position:relative; left:15px; top:-25px; color:green">Following</font>    
+                                {% else %} 
+                                    <a class="btn btn-primary" href="{{ url_for('user_posts', username=post.author.username) }}">Follow</a>    
                                 {% endif %}
                             {% endif %}
                     {% endif %}
                 </div>
                 <div class="card-body">
                     <h2 class="card-title"><a class="card-link" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
-                    <audio style="width:100%; position:relative; top:15px;" controls preload="none">
+                    <audio style="width:100%;" controls preload="none">
                         <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
                     </audio>
-                    <p style="width:100%; position:relative; top:25px;" class="card-text">{{ tagcontents[loop.index0]|safe }}</p>
+                    <p  class="card-text">{{ tagcontents[loop.index0]|safe }}</p>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user!=post.author %}  
+                            {% if current_user.is_liking(post) %}
+                                <a class="btn btn-primary" href="{{ url_for('post', post_id=post.id) }}">Unlike</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{{ url_for('post', post_id=post.id) }}">Like</a>
+                            {% endif %}
+                        {% endif %}
+                        <a class="btn btn-primary" href="{{ url_for('post', post_id=post.id) }}">Comment</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
+                    {% endif %}
                     <p style="width:100%; position:relative; top:10px;" class="card-text">{{ post.likers.count() }} likes </p>  
                 </div>
             </div>
@@ -122,6 +138,7 @@
                                 <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
                             {% endif %}
                         {% endif %}
+                        <a class="btn btn-primary" href="{{ url_for('post', post_id=post.id) }}">Comment</a>
                     {% else %}
                         <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
                     {% endif %}
