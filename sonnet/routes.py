@@ -1,7 +1,7 @@
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, login_required, logout_user
 from sonnet import app, bcrypt, db
-from sonnet.forms import PostForm, LoginForm, RegistrationForm, UpdateAccountForm
+from sonnet.forms import PostForm, LoginForm, RegistrationForm, UpdateAccountForm,SearchForm
 from sonnet.models import Post, Tag, User
 import os
 from PIL import Image
@@ -214,3 +214,34 @@ def follow_action(type,user_id, action):
         current_user.unfollow(user)
         db.session.commit()
     return redirect(request.referrer)
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    form = SearchForm()
+    searches=[]
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    contents = []
+    for post in posts.items:
+        contents.append(process_content(post.content))
+    
+    tagposts=[]
+    tagcontents=[]
+    if form.validate_on_submit():
+        search_value=form.search.data
+        search = "%{0}%".format(search_value)
+        usersresult = User.query.filter(User.username.like(search)).all()
+        tagsresult = Tag.query.filter(Tag.name.like(search.lower())).all()
+        searches=usersresult
+        print(tagsresult)
+        for tag in tagsresult:
+            print(tag)
+            posts = tag.posts.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+            tcontents = []
+            tposts =[]
+            for post in posts.items:
+                tposts.append(post)
+                tcontents.append(process_content(post.content))
+            tagposts.extend(tposts)
+            tagcontents.extend(tcontents)
+    return render_template('search.html', title='Search', form=form, result=searches,tagposts=tagposts,tagcontents=tagcontents ,posts=posts, contents=contents)
