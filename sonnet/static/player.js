@@ -8,7 +8,10 @@ var buttons = {
 // Create an instance of wave surfer with its configuration
 var Spectrum = WaveSurfer.create({
     container: '#audio-spectrum',
-    progressColor: "#03a9f4"
+    backgroundColor: "red",
+    progressColor: "grey",
+    waveColor: "red"
+
 });
 
 // Handle Play button

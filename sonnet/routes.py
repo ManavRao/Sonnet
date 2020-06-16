@@ -1,18 +1,19 @@
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, login_required, logout_user
 from sonnet import app, bcrypt, db
-from sonnet.forms import PostForm, LoginForm, RegistrationForm, UpdateAccountForm
-from sonnet.models import Post, Tag, User
+from sonnet.forms import PostForm, LoginForm, RegistrationForm, UpdateAccountForm, SearchForm, AddCommentForm, PostUpdateForm
+from sonnet.models import Post, Tag, User, Comment
 import os
 from PIL import Image
 import re
 import secrets
 
-@app.route('/')
+
 @app.route('/home')
 def home():
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = current_user.followed_posts().paginate(page=page, per_page=5)
+    # posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
     for post in posts.items:
         contents.append(process_content(post.content))
@@ -55,7 +56,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('search'))
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -111,7 +112,7 @@ def process_tags(text):
 
 def process_content(text):
     tags = re.findall('#[\w]*', text)
-    idx = 0
+    idx = -1
     if tags:
         for tag in tags:
             t = url_for('topic', tag=tag.lower()[1:])
@@ -137,11 +138,21 @@ def new_post():
         return redirect(url_for('home'))
     return render_template('edit_post.html', title='New Post', legend='New Post', form=form)
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     post = Post.query.get_or_404(post_id)
     content = process_content(post.content)
-    return render_template('post.html', title=post.title, content=content, post=post)
+    form = AddCommentForm()
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.timestamp.desc()).all()   #.order_by(Post.date_posted.desc())
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data, post_id=post.id, author=current_user)
+        db.session.add(comment)
+        db.session.commit()
+        flash("Your comment has been added to the post", "success")
+        return redirect(url_for("post", post_id=post.id))
+    return render_template('post.html', title=post.title, content=content, post=post, form= form, comments= comments)
 
 @app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
@@ -149,7 +160,7 @@ def update_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
-    form = PostForm()
+    form = PostUpdateForm()
     if form.validate_on_submit():
         if form.track.data:
             os.remove(os.path.join(app.root_path, 'static/tracks', post.track))
@@ -201,3 +212,59 @@ def topic(tag):
     for post in posts.items:
         contents.append(process_content(post.content))
     return render_template('topic.html', title=tag.name, posts=posts, contents=contents, tag=tag)
+
+@app.route('/home/<int:post_id>/<action>')
+@login_required
+def like_action(post_id, action):
+    post = Post.query.filter_by(id=post_id).first_or_404()
+    if action == 'like':
+        current_user.like(post)
+        db.session.commit()
+    if action == 'unlike':
+        current_user.unlike(post)
+        db.session.commit()
+    return redirect(request.referrer)
+
+@app.route('/home/<type>/<int:user_id>/<action>')
+@login_required
+def follow_action(type,user_id, action):
+    user = User.query.filter_by(id=user_id).first_or_404()
+    if action == 'follow':
+        current_user.follow(user)
+        db.session.commit()
+    if action == 'unfollow':
+        current_user.unfollow(user)
+        db.session.commit()
+    return redirect(request.referrer)
+
+@app.route('/')
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    form = SearchForm()
+    searches=[]
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    contents = []
+    for post in posts.items:
+        contents.append(process_content(post.content))
+
+    tagposts=[]
+    tagcontents=[]
+    if form.validate_on_submit():
+        search_value=form.search.data
+        search = "%{0}%".format(search_value)
+        usersresult = User.query.filter(User.username.like(search)).all()
+        tagsresult = Tag.query.filter(Tag.name.like(search.lower())).all()
+        searches=usersresult
+        print(tagsresult)
+        for tag in tagsresult:
+            print(tag)
+            posts = tag.posts.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+            tcontents = []
+            tposts =[]
+            for post in posts.items:
+                tposts.append(post)
+                tcontents.append(process_content(post.content))
+            tagposts.extend(tposts)
+            tagcontents.extend(tcontents)
+    return render_template('search.html', title='Search', form=form, result=searches,tagposts=tagposts,tagcontents=tagcontents ,posts=posts, contents=contents)

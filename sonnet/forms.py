@@ -49,5 +49,19 @@ class UpdateAccountForm(FlaskForm):
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
-    track = FileField('Choose Track', validators=[FileAllowed(['mp3'])])
+    track = FileField('Choose Track', validators=[FileAllowed(['mp3']), DataRequired()])
     submit = SubmitField('Post')
+
+class PostUpdateForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    track = FileField('Choose Track', validators=[FileAllowed(['mp3'])])
+    submit = SubmitField('Update')
+
+class SearchForm(FlaskForm):
+    search = StringField('Search', validators=[DataRequired()])
+    submit = SubmitField('Find')
+
+class AddCommentForm(FlaskForm):
+    body = StringField("Body", validators=[DataRequired()])
+    submit = SubmitField("Post")
