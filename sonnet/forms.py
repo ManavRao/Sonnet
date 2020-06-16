@@ -51,3 +51,11 @@ class PostForm(FlaskForm):
     content = TextAreaField('Content', validators=[DataRequired()])
     track = FileField('Choose Track', validators=[FileAllowed(['mp3'])])
     submit = SubmitField('Post')
+
+class SearchForm(FlaskForm):
+    search = StringField('Search', validators=[DataRequired()])
+    submit = SubmitField('Find')
+
+class AddCommentForm(FlaskForm):
+    body = StringField("Body", validators=[DataRequired()])
+    submit = SubmitField("Post")

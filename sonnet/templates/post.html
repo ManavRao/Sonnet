@@ -10,10 +10,21 @@
                         <a class="btn btn-secondary btn-sm m-2" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
                         <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
                     </div>
+                {% else %}
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.is_followingbyid(post.user_id)%}    
+                            <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=post.user_id, action='unfollow' ) }}">Following</a>    
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=post.user_id, action='follow' ) }}">Follow</a>    
+                        {% endif %}
+                    {% else %}
+                        <a class="btn btn-primary" href="{{ url_for('login') }}">Follow</a>
+                    {% endif %}
                 {% endif %}
             </div>
 
             <div class="card-body">
+
                <h5 class="card-title">{{ post.title }}</h5>
 
             <div id="audio-spectrum"></div>
@@ -26,8 +37,73 @@
                 <source id = "audio" src="{{ url_for('static', filename='tracks/' + post.track) }}">
                 <br><br>
                 <p class="card-text">{{ content|safe }}</p>
-            </div>
+                {% if current_user.is_authenticated %}
+                    {% if current_user!=post.author %}  
+                        {% if current_user.is_liking(post) %}
+                            <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
+                {% endif %}
+                <br>
+                {{ post.likers.count() }} likes 
+                    
         </div>
+        <div>
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group flex-row">
+                    <div class="form-group">
+                        {{ form.body.label(class="form-control-label") }}
+                        {% if form.body.errors %}
+                            {{ form.body(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.body.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.body(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.submit(class="btn btn-outline-info") }}    
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div >
+            <legend class="border-bottom pb-2 mb-4">Comments</legend>
+        </div>
+        <div>
+            {% for comment in comments%}
+            <!-- <div class="card mb-2">
+                <div class="card-header">
+                    <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
+                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a> 
+                    <h3>{{comment.body}}</h3>
+                </div>
+            </div> -->
+            <div  class="ml-auto mr-auto card mb-2 flex-row">
+                <div class="card-header">
+                    <div >
+                        <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
+                    </div>
+                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a> 
+                </div>
+                <div>
+                    <h3>{{comment.body}}</h3>
+                </div>
+            </div>
+
+               
+
+            {% endfor %}
+        </div>
+
     </article>
 
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
