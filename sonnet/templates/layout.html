@@ -15,7 +15,22 @@
     {% endif %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
+    <main id="songs" class="container">
+        {% with messages=get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mb-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
+    <nav id="bar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
         <div class="container">
             <a style="font-family: 'Pacifico', cursive;"class="navbar-brand" href="{{ url_for('home') }}">Sonnet</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,24 +54,46 @@
             </div>
         </div>
     </nav>
-    <main class="container">
-        {% with messages=get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} mb-2">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        {% block content %}
-        {% endblock %}
-    </main>
+
+
+    <div id="controles" class="row red darken-4">
+      <div class="col">
+        <img class="responsive-img" width="100%" src="{{ url_for('static', filename='images/music.webp') }}">
+      </div>
+
+      <div class="col-10">
+        <div>
+          <div id="counter" class="col s6 left-align white-text">
+              00:00:00.000
+          </div>
+          <div id="tamanho" class="col s6 right-align white-text">
+              00:00:00.000
+          </div>
+          <br>
+        </div>
+        <div>
+          <div id="avanco" class="progress red lighten-1">
+            <div class="indeterminate red darken-2" style="width:75%"></div>
+          </div>
+        </div>
+        <div id="info" class="center-align white-text">
+          Radio ROOSTER - AO VIVO
+        </div>
+      </div>
+
+      <div class="col">
+        <input id="play" type="image" alt="stop" width="100%" src= "{{ url_for('static', filename='images/play.png')}}"></div>
+      </div>
+    </div>
+
+
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="{{ url_for('static', filename='audio_player.js') }}"></script>
 </body>
 </html>

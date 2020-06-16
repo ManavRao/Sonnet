@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Major+Mono+Display');
+
 audio:hover, audio:active
 {
 -webkit-box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
@@ -20,4 +22,29 @@ box-shadow: 2px 2px 4px 0px #006773;
 -moz-border-radius:7px 7px 7px 7px ;
 -webkit-border-radius:7px 7px 7px 7px ;
 border-radius:7px 7px 7px 7px ;
+}
+
+#bar{
+top: 0px;
+position: fixed;
+width: 100%;
+}
+
+#songs{
+    padding: 60px 0px 100px 0px;
+}
+
+#controles {
+  background: darkslategrey;
+  font-family: 'Major Mono Display', monospace;
+  position: fixed;
+  bottom:0;
+  width:100%;
+  margin:0;
+  height: 88px;
+  padding:12px 0px 5px 0px;
+}
+
+.botao {
+  cursor:pointer;
 }
