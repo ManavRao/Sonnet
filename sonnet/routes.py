@@ -75,6 +75,8 @@ def account():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
+            if current_user.image_file != 'default.jpg':
+                os.remove(os.path.join(app.root_path, 'static/profile_pictures', current_user.image_file))
             current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
@@ -150,6 +152,7 @@ def update_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         if form.track.data:
+            os.remove(os.path.join(app.root_path, 'static/tracks', post.track))
             track_file = save_track(form.track.data)
             post.track = track_file
         tags = process_tags(form.content.data)
@@ -173,6 +176,7 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
+    os.remove(os.path.join(app.root_path, 'static/tracks', post.track))
     db.session.delete(post)
     db.session.commit()
     flash('Your post has been deleted!', 'success')
