@@ -24,10 +24,18 @@
             </div>
 
             <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <audio style="width:100%;" controls preload="none">
-                    <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
-                </audio>
+
+               <h5 class="card-title">{{ post.title }}</h5>
+
+            <div id="audio-spectrum"></div>
+            <!-- Create action buttons -->
+            <input type="image" id="btn-play" src="{{url_for('static', filename='images/play.png') }}" width="10%" height="10%" alt="Play" disabled="disabled"/>
+            <input type="image" id="btn-pause" src="{{url_for('static', filename='images/pause.png') }}" width="10%" height="10%" alt="Pause" disabled="disabled"/>
+            <input type="image" id="btn-stop" src="{{url_for('static', filename='images/stop.png') }}" width="10%" height="10%" alt="Stop" disabled="disabled" />
+              <!-- <audio style="width:100%;" controls preload="none">
+                   </audio> -->
+                <source id = "audio" src="{{ url_for('static', filename='tracks/' + post.track) }}">
+                <br><br>
                 <p class="card-text">{{ content|safe }}</p>
                 {% if current_user.is_authenticated %}
                     {% if current_user!=post.author %}  
