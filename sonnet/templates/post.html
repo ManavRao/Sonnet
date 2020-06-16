@@ -12,10 +12,10 @@
                     </div>
                 {% else %}
                     {% if current_user.is_authenticated %}
-                        {% if current_user.is_followingbyid(post.user_id)%}    
-                            <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=post.user_id, action='unfollow' ) }}">Following</a>    
+                        {% if current_user.is_followingbyid(post.user_id)%}
+                            <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=post.user_id, action='unfollow' ) }}">Following</a>
                         {% else %}
-                            <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=post.user_id, action='follow' ) }}">Follow</a>    
+                            <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=post.user_id, action='follow' ) }}">Follow</a>
                         {% endif %}
                     {% else %}
                         <a class="btn btn-primary" href="{{ url_for('login') }}">Follow</a>
@@ -38,19 +38,19 @@
                 <br><br>
                 <p class="card-text">{{ content|safe }}</p>
                 {% if current_user.is_authenticated %}
-                    {% if current_user!=post.author %}  
+                    {% if current_user!=post.author %}
                         {% if current_user.is_liking(post) %}
-                            <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+                            <a class="fa fa-thumbs-down" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
                         {% else %}
-                            <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+                            <a class="fa fa-thumbs-up" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
                         {% endif %}
                     {% endif %}
                 {% else %}
-                    <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
+                    <a class="fa fa-thumbs-up" href="{{ url_for('login') }}">Like</a>
                 {% endif %}
                 <br>
-                {{ post.likers.count() }} likes 
-                    
+                {{ post.likers.count() }} likes
+
         </div>
         <div>
             <form method="POST" action="">
@@ -70,7 +70,7 @@
                         {% endif %}
                     </div>
                     <div>
-                        {{ form.submit(class="btn btn-outline-info") }}    
+                        {{ form.submit(class="btn btn-outline-info") }}
                     </div>
                 </fieldset>
             </form>
@@ -83,7 +83,7 @@
             <!-- <div class="card mb-2">
                 <div class="card-header">
                     <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
-                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a> 
+                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a>
                     <h3>{{comment.body}}</h3>
                 </div>
             </div> -->
@@ -92,14 +92,14 @@
                     <div >
                         <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
                     </div>
-                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a> 
+                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a>
                 </div>
                 <div>
                     <h3>{{comment.body}}</h3>
                 </div>
             </div>
 
-               
+
 
             {% endfor %}
         </div>
