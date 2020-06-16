@@ -75,6 +75,8 @@ def account():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
+            if current_user.image_file != 'default.jpg':
+                os.remove(os.path.join(app.root_path, 'static/profile_pictures', current_user.image_file))
             current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
@@ -109,10 +111,12 @@ def process_tags(text):
 
 def process_content(text):
     tags = re.findall('#[\w]*', text)
+    idx = 0
     if tags:
         for tag in tags:
             t = url_for('topic', tag=tag.lower()[1:])
-            text = text.replace(tag, f'<a href="{t}">{tag}</a>')
+            text = text[:idx+1] + text[idx+1:].replace(tag, f'<a href="{t}">{tag}</a>', 1)
+            idx = text.index(tag)
     return text
 
 @app.route('/post/new', methods=['GET', 'POST'])
@@ -148,8 +152,14 @@ def update_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         if form.track.data:
+            os.remove(os.path.join(app.root_path, 'static/tracks', post.track))
             track_file = save_track(form.track.data)
             post.track = track_file
+        tags = process_tags(form.content.data)
+        for tag in tags:
+            tg_ex = Tag.query.filter_by(name=tag.name).first()
+            if tg_ex is None:
+                db.session.add(tag)
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
@@ -166,6 +176,7 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
+    os.remove(os.path.join(app.root_path, 'static/tracks', post.track))
     db.session.delete(post)
     db.session.commit()
     flash('Your post has been deleted!', 'success')
