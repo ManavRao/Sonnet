@@ -9,9 +9,9 @@
                 {% if current_user.is_authenticated %}
                 {% if user != current_user %}    
                     {% if current_user.is_followingbyid(user.id)%}    
-                        <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='unfollow' ) }}">Following</a>    
+                        <a class="btn btn-outline-success btn-sm" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='unfollow' ) }}">Following</a>    
                     {% else %}
-                        <a class="btn btn-primary" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='follow' ) }}">Follow</a>    
+                        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='follow' ) }}">Follow</a>    
                     {% endif %}
                 {% endif %}
             {% else %}
