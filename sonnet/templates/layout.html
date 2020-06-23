@@ -72,9 +72,8 @@
 
            <!-- Card content -->
            <div id="player_body" class="card-body text-center">
-             <p class="mb-0">Urban Bachata remix</p>
-             <audio id="music" preload="true">
-                 <source src="{{ url_for('static', filename='tracks/45384434f60fd02c.mp3') }}">
+             <p id="song_title_player" class="mb-0">Carnival of Rust</p>
+             <audio id="music" preload="true" src="{{ url_for('static', filename='tracks/45384434f60fd02c.mp3') }}">
              </audio>
              <div id="audioplayer">
                  <i id="pButton" class="fas fa-play"></i>

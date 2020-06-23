@@ -29,13 +29,17 @@
 
             <div id="audio-spectrum"></div>
             <!-- Create action buttons -->
-            <input type="image" id="btn-play" src="{{url_for('static', filename='images/play.png') }}" width="10%" height="10%" alt="Play" disabled="disabled"/>
-            <input type="image" id="btn-pause" src="{{url_for('static', filename='images/pause.png') }}" width="10%" height="10%" alt="Pause" disabled="disabled"/>
+            <input type="image" id="btn-play" onclick="set_music('{{ url_for('static', filename='tracks/' + post.track) }}', '{{ post.title }}' )" src="{{url_for('static', filename='images/play.png') }}" width="10%" height="10%" alt="{{ url_for('static', filename='tracks/' + post.track) }}"/>
+            <!-- <input type="image" id="btn-pause" src="{{url_for('static', filename='images/pause.png') }}" width="10%" height="10%" alt="Pause" disabled="disabled"/>
             <input type="image" id="btn-stop" src="{{url_for('static', filename='images/stop.png') }}" width="10%" height="10%" alt="Stop" disabled="disabled" />
+            <source id = "audio" src="{{ url_for('static', filename='tracks/' + post.track) }}">
+              <br><br>
+               -->
               <!-- <audio style="width:100%;" controls preload="none">
                    </audio> -->
-                <source id = "audio" src="{{ url_for('static', filename='tracks/' + post.track) }}">
-                <br><br>
+                   <audio style="width:100%;" controls preload="none">
+                       <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
+                   </audio>
                 <p class="card-text">{{ content|safe }}</p>
                 {% if current_user.is_authenticated %}
                     {% if current_user!=post.author %}
@@ -129,8 +133,8 @@
     </div>
 
     <!-- Load the wavesurferscript , in this case from a CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='player.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='player.js') }}"></script> -->
 
 {% endblock %}
