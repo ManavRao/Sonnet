@@ -1,18 +1,16 @@
-
-
 var music = document.getElementById('music'); // id for audio element
 var duration = music.duration; // Duration of audio clip, calculated here for embedding purposes
 var pButton = document.getElementById('pButton'); // play button
 var playhead = document.getElementById('playhead'); // playhead
 var timeline = document.getElementById('timeline'); // timeline
 
-// timeline width adjusted for playhead
+// length of song i.e. timeline
 var timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
 
-// play button event listenter
+// to check play button event
 pButton.addEventListener("click", play);
 
-// timeupdate event listener
+// updating time as music proceeds
 music.addEventListener("timeupdate", timeUpdate, false);
 
 // makes timeline clickable
@@ -21,7 +19,7 @@ timeline.addEventListener("click", function (event) {
    music.currentTime = duration * clickPercent(event);
 }, false);
 
-// returns click as decimal (.77) of the total timelineWidth
+// function to convert mouse click to x-position
 function clickPercent(event) {
    return (event.clientX - getPosition(timeline)) / timelineWidth;
 }
@@ -52,6 +50,7 @@ function mouseUp(event) {
    }
    onplayhead = false;
 }
+
 // mousemove EventListener
 // Moves playhead as user drags
 function moveplayhead(event) {
@@ -79,6 +78,7 @@ function timeUpdate() {
    }
 }
 
+
 //Play and Pause
 function play() {
    // start music
@@ -100,24 +100,26 @@ music.addEventListener("canplaythrough", function () {
    duration = music.duration;
 }, false);
 
-// getPosition
+// getPosition to calculate remaining song length
 // Returns elements left position relative to top-left of viewport
 function getPosition(el) {
    return el.getBoundingClientRect().left;
 }
 
+//stop and hide the player
 function stop_muic() {
     music.pause();
     document.getElementById('controles').style.display = 'none';
 }
 
+//main function
 function set_music(id1, id2) {
   document.getElementById('controles').style.display = 'block';
   document.getElementById('music').src = id1; //updating song source
   document.getElementById('song_title_player').innerHTML = id2; //updating the song title
   var temp = document.getElementById('music');
   music = temp;
-  duration = temp.duration; // Duration of audio clip, calculated here for embedding purposes
-  timelineWidth = timeline.offsetWidth - playhead.offsetWidth; //setting the width of seek
+  duration = temp.duration; // Duration of audio clip, recalculated according to song selected
+  timelineWidth = timeline.offsetWidth - playhead.offsetWidth; //re-setting the width of seek
   play(); //playing the song
 }

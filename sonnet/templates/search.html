@@ -30,7 +30,7 @@
         </h2>
         {% endif %}
         {% for res in result %}
-            <div style="max-width: 1000px;" class="ml-auto mr-auto card flex-row">
+            <div style="width: 100%; margin:10px 0px;" class="ml-auto mr-auto card flex-row">
                 <div class="m-4">
                     <a href="{{ url_for('user_posts', username=res.username) }}">
                         <img style="border-radius: 50%" width=100 src="{{ url_for('static', filename='profile_pictures/' + res.image_file)}} ">
@@ -59,13 +59,13 @@
             </h2>
         {% endif %}
         {% for post in tagposts %}
-        <article>
-            <div style="max-width: 1000px;" class="ml-auto mr-auto card flex-row">
+        <article id="search_tags">
+            <div style="width: 100%;" class="ml-auto mr-auto card flex-row">
                 <div class="card-header">
                     <div style="width: 300;">
                         <img style="width: 100px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + post.author.image_file) }}">
                     </div>
-                    <h3><a class="card-link" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}</a></h3>
+                    <br>
                     <p style="position:relative; top:-8px;" class="text-muted">{{ post.date_posted.strftime('%d %B, %Y') }}</p>
                     {% if current_user.is_authenticated %}
                             {% if post.author  != current_user %}
@@ -76,6 +76,7 @@
                     {% endif %}
                 </div>
                 <div class="card-body">
+                  <h5><a class="card-link" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}'s</a></h5>
                     <h2 class="card-title"><a class="card-link" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
                       <input type="image" id="btn-play" onclick="set_music('{{ url_for('static', filename='tracks/' + post.track) }}', '{{ post.title }}' )" src="{{url_for('static', filename='images/play.png') }}" width="10%" height="10%" alt="{{ url_for('static', filename='tracks/' + post.track) }}"/>
                     </h2>
@@ -84,7 +85,7 @@
                     </audio> -->
                     <p  class="card-text">{{ tagcontents[loop.index0]|safe }}</p>
                     {% if current_user.is_authenticated %}
-                        {{ post.likers.count() }} 
+                        {{ post.likers.count() }}
                         {% if current_user!=post.author %}
                             {% if current_user.is_liking(post) %}
                                 <a class="fa fa-thumbs-down" href="{{ url_for('post', post_id=post.id) }}"></a>
@@ -164,7 +165,7 @@
                         <a class="fa fa-thumbs-up" href="{{ url_for('login') }}"></a>
                     {% endif %}
                     <br>
-                     
+
 
                 </div>
             </div>
