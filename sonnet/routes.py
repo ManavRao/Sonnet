@@ -182,6 +182,7 @@ def update_post(post_id):
             tg_ex = Tag.query.filter_by(name=tag.name).first()
             if tg_ex is None:
                 db.session.add(tag)
+        post.tags = tags
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
