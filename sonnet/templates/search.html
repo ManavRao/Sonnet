@@ -84,18 +84,23 @@
                     </audio> -->
                     <p  class="card-text">{{ tagcontents[loop.index0]|safe }}</p>
                     {% if current_user.is_authenticated %}
+                        {{ post.likers.count() }} 
                         {% if current_user!=post.author %}
                             {% if current_user.is_liking(post) %}
                                 <a class="fa fa-thumbs-down" href="{{ url_for('post', post_id=post.id) }}"></a>
                             {% else %}
                                 <a class="fa fa-thumbs-up" href="{{ url_for('post', post_id=post.id) }}"></a>
                             {% endif %}
+                        {% else %}
+                            <a class="fa fa-thumbs-up"></a>
                         {% endif %}
+                        &nbsp;
+                        {{ tagnum_comments[loop.index0]|safe }}
                         <a class="fa fa-comments" href="{{ url_for('post', post_id=post.id) }}"></a>
                     {% else %}
                         <a class="fa fa-thumbs-up" href="{{ url_for('login') }}"></a>
                     {% endif %}
-                    <p style="width:100%; position:relative; top:10px;" class="card-text">{{ post.likers.count() }} likes </p>
+                    <p style="width:100%; position:relative; top:10px;" class="card-text"> </p>
                 </div>
             </div>
         </article>
@@ -142,19 +147,24 @@
                     </audio> -->
                     <p class="card-text">{{ contents[loop.index0]|safe }}</p>
                     {% if current_user.is_authenticated %}
+                        {{ post.likers.count() }}
                         {% if current_user!=post.author %}
                             {% if current_user.is_liking(post) %}
                                 <a class="fa fa-thumbs-down" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"></a>
                             {% else %}
                                 <a class="fa fa-thumbs-up" href="{{ url_for('like_action', post_id=post.id, action='like') }}"></a>
                             {% endif %}
+                        {% else %}
+                            <a class="fa fa-thumbs-up"></a>
                         {% endif %}
+                        &nbsp;
+                        {{ num_comments[loop.index0]|safe }}
                         <a class="fa fa-comments" href="{{ url_for('post', post_id=post.id) }}"></a>
                     {% else %}
                         <a class="fa fa-thumbs-up" href="{{ url_for('login') }}"></a>
                     {% endif %}
                     <br>
-                    {{ post.likers.count() }} likes
+                     
 
                 </div>
             </div>
@@ -163,9 +173,9 @@
     {% for page_num in posts.iter_pages(left_current=1, left_edge=1, right_current=2, right_edge=1) %}
         {% if page_num %}
             {% if posts.page == page_num %}
-                <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                <a class="btn btn-info mb-4" href="{{ url_for('search', page=page_num) }}">{{ page_num }}</a>
             {% else %}
-                <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('search', page=page_num) }}">{{ page_num }}</a>
             {% endif %}
         {% else %}
             ...
