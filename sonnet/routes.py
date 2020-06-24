@@ -15,9 +15,12 @@ def home():
     posts = current_user.followed_posts().paginate(page=page, per_page=5)
     # posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
+    num_comments=[]
     for post in posts.items:
         contents.append(process_content(post.content))
-    return render_template('home.html', posts=posts, contents=contents)
+        num_comment = len(Comment.query.filter_by(post_id=post.id).all())
+        num_comments.append(num_comment)
+    return render_template('home.html', posts=posts, contents=contents, num_comments=num_comments)
 
 @app.route('/about')
 def about():
@@ -163,7 +166,9 @@ def post(post_id):
         db.session.commit()
         flash("Your comment has been added to the post", "success")
         return redirect(url_for("post", post_id=post.id))
-    return render_template('post.html', title=post.title, content=content, post=post, form= form, comments= comments)
+    num_comment = len(comments)
+    print(num_comment)
+    return render_template('post.html', title=post.title, content=content, post=post, form= form, comments= comments, num_comment= num_comment)
 
 @app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
@@ -210,9 +215,13 @@ def user_posts(username):
     page = request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
+    num_comments=[]
     for post in posts.items:
         contents.append(process_content(post.content))
-    return render_template('user_posts.html',posts=posts, contents=contents, user=user)
+        num_comment = len(Comment.query.filter_by(post_id=post.id).all())
+        num_comments.append(num_comment)
+    print(num_comments)
+    return render_template('user_posts.html',posts=posts, contents=contents, user=user, num_comments=num_comments)
 
 @app.route('/topic/<string:tag>')
 def topic(tag):
@@ -220,9 +229,12 @@ def topic(tag):
     page = request.args.get('page', 1, type=int)
     posts = tag.posts.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
+    num_comments=[]
     for post in posts.items:
         contents.append(process_content(post.content))
-    return render_template('topic.html', title=tag.name, posts=posts, contents=contents, tag=tag)
+        num_comment = len(Comment.query.filter_by(post_id=post.id).all())
+        num_comments.append(num_comment)
+    return render_template('topic.html', title=tag.name, posts=posts, contents=contents, tag=tag, num_comments=num_comments)
 
 @app.route('/home/<int:post_id>/<action>')
 @login_required
@@ -254,28 +266,35 @@ def search():
     form = SearchForm()
     searches=[]
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    explore_posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
-    for post in posts.items:
+    num_comments=[]
+    for post in explore_posts.items:
         contents.append(process_content(post.content))
+        num_comment = len(Comment.query.filter_by(post_id=post.id).all())
+        num_comments.append(num_comment)
 
     tagposts=[]
     tagcontents=[]
+    tagnum_comments=[]
     if form.validate_on_submit():
         search_value=form.search.data
         search = "%{0}%".format(search_value)
         usersresult = User.query.filter(User.username.like(search)).all()
         tagsresult = Tag.query.filter(Tag.name.like(search.lower())).all()
         searches=usersresult
-        print(tagsresult)
         for tag in tagsresult:
-            print(tag)
             posts = tag.posts.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
             tcontents = []
+            tnum_comments=[]
             tposts =[]
             for post in posts.items:
                 tposts.append(post)
                 tcontents.append(process_content(post.content))
+                tnum_comment = len(Comment.query.filter_by(post_id=post.id).all())
+                tnum_comments.append(num_comment)
+
             tagposts.extend(tposts)
             tagcontents.extend(tcontents)
-    return render_template('search.html', title='Search', form=form, result=searches,tagposts=tagposts,tagcontents=tagcontents ,posts=posts, contents=contents)
+            tagnum_comments.extend(tnum_comments)
+    return render_template('search.html', title='Search', form=form, result=searches,tagposts=tagposts,tagcontents=tagcontents, tagnum_comments=tagnum_comments ,posts=explore_posts, contents=contents, num_comments=num_comments)

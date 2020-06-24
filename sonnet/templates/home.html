@@ -17,19 +17,24 @@
                     </audio> -->
                     <p class="card-text">{{ contents[loop.index0]|safe }}</p>
                     {% if current_user.is_authenticated %}
-                        {% if current_user!=post.author %}
+                        {{ post.likers.count() }}
+                        {% if current_user!=post.author %} 
                             {% if current_user.is_liking(post) %}
                                 <a class="fa fa-thumbs-down" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"></a>
                             {% else %}
                                 <a class="fa fa-thumbs-up" href="{{ url_for('like_action', post_id=post.id, action='like') }}"></a>
                             {% endif %}
+                        {% else %}
+                            <a class="fa fa-thumbs-up"></a>
                         {% endif %}
+                        &nbsp;
+                        {{ num_comments[loop.index0]|safe }}
                         <a class="fa fa-comments" href="{{ url_for('post', post_id=post.id) }}"></a>
                     {% else %}
                         <a class="fas fa-thumbs-up" href="{{ url_for('login') }}"></a>
                     {% endif %}
                     <br>
-                    {{ post.likers.count() }} likes
+                    
 
                 </div>
             </div>
