@@ -106,8 +106,8 @@
         </h2>
         {% endif %}
         {% endif %}
-        {% endif %}       
-    
+        {% endif %}
+
 
     <div >
         <legend class="border-bottom pb-2 mb-4">Explore</legend>
@@ -132,22 +132,24 @@
                     {% endif %}
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title"><a class="card-link" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h5>
-                    <audio style="width:100%;" controls preload="none">
+                    <h5 class="card-title"><a class="card-link" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+                      <input type="image" id="btn-play" onclick="set_music('{{ url_for('static', filename='tracks/' + post.track) }}', '{{ post.title }}' )" src="{{url_for('static', filename='images/play.png') }}" width="10%" height="10%" alt="{{ url_for('static', filename='tracks/' + post.track) }}"/>
+                    </h5>
+                    <!-- <audio style="width:100%;" controls preload="none">
                         <source src="{{ url_for('static', filename='tracks/' + post.track) }}">
-                    </audio>
+                    </audio> -->
                     <p class="card-text">{{ contents[loop.index0]|safe }}</p>
                     {% if current_user.is_authenticated %}
                         {% if current_user!=post.author %}
                             {% if current_user.is_liking(post) %}
-                                <a class="fa fa-thumbs-down" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+                                <a class="fa fa-thumbs-down" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"></a>
                             {% else %}
-                                <a class="fa fa-thumbs-up" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+                                <a class="fa fa-thumbs-up" href="{{ url_for('like_action', post_id=post.id, action='like') }}"></a>
                             {% endif %}
                         {% endif %}
-                        <a class="fa fa-comments" href="{{ url_for('post', post_id=post.id) }}">Comment</a>
+                        <a class="fa fa-comments" href="{{ url_for('post', post_id=post.id) }}"></a>
                     {% else %}
-                        <a class="fa fa-thumbs-up" href="{{ url_for('login') }}">Like</a>
+                        <a class="fa fa-thumbs-up" href="{{ url_for('login') }}"></a>
                     {% endif %}
                     <br>
                     {{ post.likers.count() }} likes
