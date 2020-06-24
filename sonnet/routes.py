@@ -187,6 +187,7 @@ def update_post(post_id):
             tg_ex = Tag.query.filter_by(name=tag.name).first()
             if tg_ex is None:
                 db.session.add(tag)
+        post.tags = tags
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
@@ -269,6 +270,7 @@ def search():
     explore_posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
     num_comments=[]
+
     for post in explore_posts.items:
         contents.append(process_content(post.content))
         num_comment = len(Comment.query.filter_by(post_id=post.id).all())
@@ -296,5 +298,6 @@ def search():
 
             tagposts.extend(tposts)
             tagcontents.extend(tcontents)
+            
             tagnum_comments.extend(tnum_comments)
-    return render_template('search.html', title='Search', form=form, result=searches,tagposts=tagposts,tagcontents=tagcontents, tagnum_comments=tagnum_comments ,posts=explore_posts, contents=contents, num_comments=num_comments)
+    return render_template('search.html', title='Search', form=form, result=searches, tagposts=tagposts, tagcontents=tagcontents, tagnum_comments=tagnum_comments, posts=explore_posts, contents=contents, num_comments=num_comments)
