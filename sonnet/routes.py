@@ -254,9 +254,9 @@ def search():
     form = SearchForm()
     searches=[]
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    explore_posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     contents = []
-    for post in posts.items:
+    for post in explore_posts.items:
         contents.append(process_content(post.content))
 
     tagposts=[]
@@ -278,4 +278,4 @@ def search():
                 tcontents.append(process_content(post.content))
             tagposts.extend(tposts)
             tagcontents.extend(tcontents)
-    return render_template('search.html', title='Search', form=form, result=searches,tagposts=tagposts,tagcontents=tagcontents ,posts=posts, contents=contents)
+    return render_template('search.html', title='Search', form=form, result=searches, tagposts=tagposts, tagcontents=tagcontents, posts=explore_posts, contents=contents)
