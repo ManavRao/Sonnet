@@ -1,14 +1,3 @@
-function set_music(id1, id2) {
-  document.getElementById('controles').style.display = 'block';
-  document.getElementById('music').src = id1;
-  var temp = document.getElementById('music');
-  music = temp;
-  duration = temp.duration; // Duration of audio clip, calculated here for embedding purposes
-
-  document.getElementById('song_title_player').innerHTML = id2;
-  play();
-}
-
 
 
 var music = document.getElementById('music'); // id for audio element
@@ -120,4 +109,15 @@ function getPosition(el) {
 function stop_muic() {
     music.pause();
     document.getElementById('controles').style.display = 'none';
+}
+
+function set_music(id1, id2) {
+  document.getElementById('controles').style.display = 'block';
+  document.getElementById('music').src = id1; //updating song source
+  document.getElementById('song_title_player').innerHTML = id2; //updating the song title
+  var temp = document.getElementById('music');
+  music = temp;
+  duration = temp.duration; // Duration of audio clip, calculated here for embedding purposes
+  timelineWidth = timeline.offsetWidth - playhead.offsetWidth; //setting the width of seek
+  play(); //playing the song
 }
