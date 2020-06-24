@@ -50,7 +50,7 @@
                     <a class="fa fa-thumbs-up" href="{{ url_for('login') }}"></a>
                 {% endif %}
                 <br>
-                 
+
 
         </div>
         <div  class="ml-5 mr-5">
@@ -82,23 +82,16 @@
         </div>
         <div>
             {% for comment in comments%}
-            <!-- <div class="card mb-2">
-                <div class="card-header">
-                    <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
-                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a>
-                    <h3>{{comment.body}}</h3>
-                </div>
-            </div> -->
             <div  class="card flex-row ml-5 mr-5 mb-3">
                 <div class="card-header">
-                    <div >
+                    <div style="text-align:center;">
                         <a href="{{ url_for('user_posts', username=comment.author.username) }}">
-                            <img style="width: 40px; border-radius: 50%;" class="mr-2" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
+                            <img style="width: 70%; border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/' + comment.author.image_file) }}">
                         </a>
                     </div>
-                    <a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }}</a>
                 </div>
-                <div>
+                <div style="margin:auto; text-align:center;">
+                  <p style="font-size:70%;" ><a class="card-link" href="{{ url_for('user_posts', username=comment.author.username) }}">{{ comment.author.username }} </a>says<p>
                     <p style="font-size:120%;">{{comment.body}}</p>
                 </div>
             </div>

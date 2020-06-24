@@ -261,7 +261,7 @@ def follow_action(type,user_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     form = SearchForm()
@@ -298,6 +298,6 @@ def search():
 
             tagposts.extend(tposts)
             tagcontents.extend(tcontents)
-            
+
             tagnum_comments.extend(tnum_comments)
     return render_template('search.html', title='Search', form=form, result=searches, tagposts=tagposts, tagcontents=tagcontents, tagnum_comments=tagnum_comments, posts=explore_posts, contents=contents, num_comments=num_comments)
