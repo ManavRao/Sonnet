@@ -1,8 +1,14 @@
 function set_music(id1, id2) {
+  document.getElementById('controles').style.display = 'block';
   document.getElementById('music').src = id1;
+  var temp = document.getElementById('music');
+  music = temp;
+  duration = temp.duration; // Duration of audio clip, calculated here for embedding purposes
+
   document.getElementById('song_title_player').innerHTML = id2;
   play();
 }
+
 
 
 var music = document.getElementById('music'); // id for audio element
@@ -109,4 +115,9 @@ music.addEventListener("canplaythrough", function () {
 // Returns elements left position relative to top-left of viewport
 function getPosition(el) {
    return el.getBoundingClientRect().left;
+}
+
+function stop_muic() {
+    music.pause();
+    document.getElementById('controles').style.display = 'none';
 }

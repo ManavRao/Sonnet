@@ -7,11 +7,11 @@
         <div class="card-block mt-auto mb-auto ml-2">
             <h2 class="card-title">{{ user.username }}
                 {% if current_user.is_authenticated %}
-                {% if user != current_user %}    
-                    {% if current_user.is_followingbyid(user.id)%}    
-                        <a class="btn btn-outline-success btn-sm" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='unfollow' ) }}">Following</a>    
+                {% if user != current_user %}
+                    {% if current_user.is_followingbyid(user.id)%}
+                        <a class="btn btn-outline-success btn-sm" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='unfollow' ) }}">Following</a>
                     {% else %}
-                        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='follow' ) }}">Follow</a>    
+                        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('follow_action', type='follow', user_id=user.id, action='follow' ) }}">Follow</a>
                     {% endif %}
                 {% endif %}
             {% else %}
@@ -21,7 +21,7 @@
             <p class="card-text">{{ user.email }}</p>
         </div>
         <div class="card-block mt-auto mb-auto ml-2">
-            
+
         </div>
     </div>
     <h1 class="mb-3">Posts by {{ user.username }} ({{ posts.total }})</h1>
@@ -39,20 +39,20 @@
                     </audio>
                     <p class="card-text">{{ contents[loop.index0]|safe }}</p>
                     {% if current_user.is_authenticated %}
-                        {% if current_user!=post.author %}  
+                        {% if current_user!=post.author %}
                             {% if current_user.is_liking(post) %}
-                                <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+                                <a class="fa fa-thumbs-down" href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"></a>
                             {% else %}
-                                <a class="btn btn-primary" href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+                                <a class="fa fa-thumbs-up" href="{{ url_for('like_action', post_id=post.id, action='like') }}"></a>
                             {% endif %}
                         {% endif %}
-                        <a class="btn btn-primary" href="{{ url_for('post', post_id=post.id) }}">Comment</a>
+                        <a class="fa fa-comments" href="{{ url_for('post', post_id=post.id) }}"></a>
                     {% else %}
-                        <a class="btn btn-primary" href="{{ url_for('login') }}">Like</a>
+                        <a class="fa fa-thumbs-up" href="{{ url_for('login') }}"></a>
                     {% endif %}
                     <br>
-                    {{ post.likers.count() }} likes 
-                    
+                    {{ post.likers.count() }} likes
+
                 </div>
             </div>
         </article>
