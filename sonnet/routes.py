@@ -267,7 +267,7 @@ def search():
     form = SearchForm()
     searches=[]
     page = request.args.get('page', 1, type=int)
-    explore_posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    explore_posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5,error_out=False)
     contents = []
     num_comments=[]
 
@@ -284,13 +284,13 @@ def search():
         search = "%{0}%".format(search_value)
         usersresult = User.query.filter(User.username.like(search)).all()
         tagsresult = Tag.query.filter(Tag.name.like(search.lower())).all()
-        searches=usersresult
+        searches = usersresult
         for tag in tagsresult:
-            posts = tag.posts.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+            posts = tag.posts.order_by(Post.date_posted.desc())
             tcontents = []
             tnum_comments=[]
             tposts =[]
-            for post in posts.items:
+            for post in posts:
                 tposts.append(post)
                 tcontents.append(process_content(post.content))
                 tnum_comment = len(Comment.query.filter_by(post_id=post.id).all())

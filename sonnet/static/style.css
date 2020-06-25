@@ -55,7 +55,7 @@ width: 100%;
 
 #pButton {
   float: left;
-  margin-top: 3px;
+  margin-top: 4px;
   cursor: pointer;
 }
 
@@ -63,22 +63,25 @@ width: 100%;
   float: right;
   margin-right: 10px;
   cursor: pointer;
+  margin-top: 3px;
 }
 
 #timeline {
   width: 90%;
-  height: 2px;
+  height: 4px;
   margin-top: 10px;
   margin-left: 20px;
   float: left;
   -webkit-border-radius: 15px;
   border-radius: 15px;
-  background: rgba(0, 0, 0, 0.3); }
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
 
 
 #playhead {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   -webkit-border-radius: 50%;
   border-radius: 50%;
   margin-top: -3px;
