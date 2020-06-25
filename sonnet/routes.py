@@ -294,7 +294,7 @@ def search():
                 tposts.append(post)
                 tcontents.append(process_content(post.content))
                 tnum_comment = len(Comment.query.filter_by(post_id=post.id).all())
-                tnum_comments.append(num_comment)
+                tnum_comments.append(tnum_comment)
 
             tagposts.extend(tposts)
             tagcontents.extend(tcontents)
