@@ -160,7 +160,7 @@ def post(post_id):
     post = Post.query.get_or_404(post_id)
     content = process_content(post.content)
     form = AddCommentForm()
-    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.timestamp.desc()).all()   #.order_by(Post.date_posted.desc())
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.timestamp.asc()).all()   #.order_by(Post.date_posted.desc())
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, post_id=post.id, author=current_user)
         db.session.add(comment)
@@ -295,7 +295,7 @@ def search():
             for post in posts:
                 if(post.id in tagpostset):
                     continue
-                
+
                 tagpostset.add(post.id)
                 tposts.append(post)
                 tcontents.append(process_content(post.content))
