@@ -1,3 +1,4 @@
+
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, login_required, logout_user
 from sonnet import app, bcrypt, db
@@ -285,12 +286,17 @@ def search():
         usersresult = User.query.filter(User.username.like(search)).all()
         tagsresult = Tag.query.filter(Tag.name.like(search.lower())).all()
         searches = usersresult
+        tagpostset = set()
         for tag in tagsresult:
             posts = tag.posts.order_by(Post.date_posted.desc())
             tcontents = []
             tnum_comments=[]
             tposts =[]
             for post in posts:
+                if(post.id in tagpostset):
+                    continue
+                
+                tagpostset.add(post.id)
                 tposts.append(post)
                 tcontents.append(process_content(post.content))
                 tnum_comment = len(Comment.query.filter_by(post_id=post.id).all())
